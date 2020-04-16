@@ -113,24 +113,69 @@
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel">
-  class Item extends React.PureComponent {
-    render() {
-      const { item: { title, complete }, onToggle } = this.props;
 
-      return (
-        <div className={`item ${complete ? 'complete' : ''}`}>
-          <div className="left-content">
-            <input className="multi-select-checkbox" type='checkbox'></input>
-            <h1>{title}</h1>
-          </div>
-          <div className="right-content">
-            <button onClick={onToggle}>Toggle complete</button>
+<script type="text/babel">
+  const NUMBER_OF_ITEMS = 35
+
+  const generateItems = () => {
+    return new Array(NUMBER_OF_ITEMS)
+      .fill(null)
+      .map((_item, i) => ({
+        title: `To-do: ${i}`,
+        complete: false
+      }))
+  };
+
+  const Item = ({ item: { title, complete }, onToggle }) => {
+    return (
+      <div className={`item ${complete ? 'complete' : ''}`}>
+        <div className="left-content">
+          <input className="multi-select-checkbox" type="checkbox"></input>
+          <h1>{title}</h1>
+        </div>
+        <div className="right-content">
+          <button onClick={onToggle}>Toggle complete</button>
+        </div>
+      </div>
+    );
+  };
+
+  const App = () => {
+    const [items, setItems] = React.useState(generateItems())
+
+    const toggleItem = index => {
+      setItems(items
+        .map((item, i) => (index === i
+          ? { ...item, complete: !item.complete }
+          : item
+        ))
+      );
+    };
+
+    return (
+      <React.Fragment>
+        <div className="app">
+          <header>
+            <div className="logo">Sleeping Duck</div>
+            <div className="nav">
+              <button>I don't do anything</button>
+              <button>I also don't do anything</button>
+              <button>User</button>
+            </div>
+          </header>
+          <div className="items">
+            {items.map((item, i) => (
+              <Item
+                key={`item-${i}`}
+                onToggle={() => toggleItem(i)}
+                item={item} />
+            ))}
           </div>
         </div>
-      );
-    }
-  }
+        <MultiSelectPopup />
+      </React.Fragment>
+    );
+  };
 
   const MultiSelectPopup = () => {
     return (
@@ -141,50 +186,11 @@
           <button>Mark as incomplete</button>
         </div>
       </React.Fragment>
-    )
-  }
+    );
+  };
 
-  class App extends React.PureComponent {
-    state = {
-      items: (new Array(35)).fill(null).map((_, i) => ({ title: `To-do: ${i}`, complete: false })),
-    };
+  ReactDOM.render(<App />, document.getElementById("root"));
 
-    toggleItem = (index) => {
-      this.setState(({ items }) => ({
-        items: items.map((item, i) => (index === i ? { ...item, complete: !item.complete } : item)),
-      }));
-    };
-
-    render() {
-      const { items } = this.state;
-
-      return (
-        <React.Fragment>
-          <div className="app">
-            <header>
-              <div className="logo">Sleeping Duck</div>
-              <div className="nav">
-                <button>I don't do anything</button>
-                <button>I also don't do anything</button>
-                <button>User</button>
-              </div>
-            </header>
-            <div className="items">
-              {items.map((item, i) => (
-                <Item
-                  key={i}
-                  onToggle={() => this.toggleItem(i)}
-                  item={item} />
-              ))}
-            </div>
-          </div>
-          <MultiSelectPopup />
-        </React.Fragment>
-      );
-    }
-  }
-
-  ReactDOM.render(<App />, document.getElementById('root'));
 </script>
 </body>
 </html>
