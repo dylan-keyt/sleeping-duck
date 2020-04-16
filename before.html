@@ -98,8 +98,7 @@
 
     .multi-select-popup {
       display: flex;
-      align-items: center;
-      justify-content: space-evenly;
+      flex-direction: column;
       background-color: white;
       border-top: 2px solid blue;
       height: 200px;
@@ -109,6 +108,15 @@
       width: 100%;
     }
 
+    .multi-select-header {
+      align-self: center;
+    }
+
+    .multi-select-buttons {
+      display: flex;
+      justify-content: space-evenly;
+    }
+
   </style>
 </head>
 <body>
@@ -116,6 +124,8 @@
 
 <script type="text/babel">
   const NUMBER_OF_ITEMS = 35
+  const COMPLETE = 'complete'
+  const SELECTED = 'selected'
 
   const generateItems = () => {
     return new Array(NUMBER_OF_ITEMS)
@@ -133,14 +143,14 @@
     handleSelected
   }) => {
     return (
-      <div className={`item ${complete ? 'complete' : ''}`}>
+      <div className={`item ${complete ? COMPLETE : ''}`}>
         <div className="left-content">
           <input
             className="multi-select-checkbox"
             type="checkbox"
             onChange={handleSelected}
           />
-          <h1>{title}</h1>
+          <h2>{title}</h2>
         </div>
         <div className="right-content">
           <button onClick={handleToggle}>Toggle complete</button>
@@ -151,16 +161,25 @@
 
   const App = () => {
     const [items, setItems] = React.useState(generateItems());
-    const [showPopup, setShowPopup] = React.useState(false);
+    const [selectedItemCount, setSelectedItemCount] = React.useState(0);
 
     React.useEffect(() => {
-      setShowPopup(items.some(({ selected }) => selected))
+      setSelectedItemCount(items.filter(({ selected }) => selected).length)
     }, [items]);
 
     const toggleItem = (index, prop) => {
       setItems(items
         .map((item, i) => (index === i
           ? { ...item, [prop]: !item[prop] }
+          : item
+        ))
+      );
+    };
+
+    const setCompleteStatus = complete => {
+      setItems(items
+        .map(item => (item.selected
+          ? { ...item, complete, selected: false }
           : item
         ))
       );
@@ -181,24 +200,34 @@
             {items.map((item, i) => (
               <Item
                 key={`item-${i}`}
-                handleToggle={() => toggleItem(i, 'complete')}
-                handleSelected={() => toggleItem(i, 'selected')}
+                handleToggle={() => toggleItem(i, COMPLETE)}
+                handleSelected={() => toggleItem(i, SELECTED)}
                 item={item} />
             ))}
           </div>
         </div>
-        {showPopup && <MultiSelectPopup />}
+        { selectedItemCount &&
+          <MultiSelectPopup
+            selectedItemCount={selectedItemCount}
+            setCompleteStatus={setCompleteStatus}
+          />
+        }
       </React.Fragment>
     );
   };
 
-  const MultiSelectPopup = () => {
+  const MultiSelectPopup = ({ selectedItemCount, setCompleteStatus }) => {
     return (
       <React.Fragment>
         <div className="multi-select-padding" />
         <div className="multi-select-popup">
-          <button>Mark as complete</button>
-          <button>Mark as incomplete</button>
+          <h2 className="multi-select-header">
+            {selectedItemCount} items selected
+          </h2>
+          <div className="multi-select-buttons">
+            <button onClick={() => setCompleteStatus(true)}>Mark as complete</button>
+            <button onClick={() => setCompleteStatus(false)}>Mark as incomplete</button>
+          </div>
         </div>
       </React.Fragment>
     );
