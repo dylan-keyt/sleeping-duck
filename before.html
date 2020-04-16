@@ -68,7 +68,7 @@
       align-items: center;
     }
 
-    .multi-select {
+    .multi-select-checkbox {
       margin-right: 10px;
     }
 
@@ -91,6 +91,24 @@
     .complete {
       background-color: lightgreen;
     }
+
+    .multi-select-padding {
+      height: 200px;
+    }
+
+    .multi-select-popup {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      background-color: white;
+      border-top: 2px solid blue;
+      height: 200px;
+      overflow: hidden;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
   </style>
 </head>
 <body>
@@ -102,16 +120,28 @@
 
       return (
         <div className={`item ${complete ? 'complete' : ''}`}>
-          <div className={'left-content'}>
-            <input className={'multi-select'} type='checkbox'></input>
+          <div className="left-content">
+            <input className="multi-select-checkbox" type='checkbox'></input>
             <h1>{title}</h1>
           </div>
-          <div className={'right-content'}>
+          <div className="right-content">
             <button onClick={onToggle}>Toggle complete</button>
           </div>
         </div>
       );
     }
+  }
+
+  const MultiSelectPopup = () => {
+    return (
+      <React.Fragment>
+        <div className="multi-select-padding" />
+        <div className="multi-select-popup">
+          <button>Mark as complete</button>
+          <button>Mark as incomplete</button>
+        </div>
+      </React.Fragment>
+    )
   }
 
   class App extends React.PureComponent {
@@ -129,25 +159,27 @@
       const { items } = this.state;
 
       return (
-        <div className="app">
-          <header>
-            <div className="logo">Sleeping Duck</div>
-            <div className="nav">
-              <button>I don't do anything</button>
-              <button>I also don't do anything</button>
-              <button>User</button>
+        <React.Fragment>
+          <div className="app">
+            <header>
+              <div className="logo">Sleeping Duck</div>
+              <div className="nav">
+                <button>I don't do anything</button>
+                <button>I also don't do anything</button>
+                <button>User</button>
+              </div>
+            </header>
+            <div className="items">
+              {items.map((item, i) => (
+                <Item
+                  key={i}
+                  onToggle={() => this.toggleItem(i)}
+                  item={item} />
+              ))}
             </div>
-          </header>
-
-          <div className="items">
-            {items.map((item, i) => (
-              <Item
-                key={i}
-                onToggle={() => this.toggleItem(i)}
-                item={item} />
-            ))}
           </div>
-        </div>
+          <MultiSelectPopup />
+        </React.Fragment>
       );
     }
   }
