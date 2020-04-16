@@ -122,31 +122,45 @@
       .fill(null)
       .map((_item, i) => ({
         title: `To-do: ${i}`,
-        complete: false
-      }))
+        complete: false,
+        selected: false
+      }));
   };
 
-  const Item = ({ item: { title, complete }, onToggle }) => {
+  const Item = ({
+    item: { title, complete, selected },
+    handleToggle,
+    handleSelected
+  }) => {
     return (
       <div className={`item ${complete ? 'complete' : ''}`}>
         <div className="left-content">
-          <input className="multi-select-checkbox" type="checkbox"></input>
+          <input
+            className="multi-select-checkbox"
+            type="checkbox"
+            onChange={handleSelected}
+          />
           <h1>{title}</h1>
         </div>
         <div className="right-content">
-          <button onClick={onToggle}>Toggle complete</button>
+          <button onClick={handleToggle}>Toggle complete</button>
         </div>
       </div>
     );
   };
 
   const App = () => {
-    const [items, setItems] = React.useState(generateItems())
+    const [items, setItems] = React.useState(generateItems());
+    const [showPopup, setShowPopup] = React.useState(false);
 
-    const toggleItem = index => {
+    React.useEffect(() => {
+      setShowPopup(items.some(({ selected }) => selected))
+    }, [items]);
+
+    const toggleItem = (index, prop) => {
       setItems(items
         .map((item, i) => (index === i
-          ? { ...item, complete: !item.complete }
+          ? { ...item, [prop]: !item[prop] }
           : item
         ))
       );
@@ -167,12 +181,13 @@
             {items.map((item, i) => (
               <Item
                 key={`item-${i}`}
-                onToggle={() => toggleItem(i)}
+                handleToggle={() => toggleItem(i, 'complete')}
+                handleSelected={() => toggleItem(i, 'selected')}
                 item={item} />
             ))}
           </div>
         </div>
-        <MultiSelectPopup />
+        {showPopup && <MultiSelectPopup />}
       </React.Fragment>
     );
   };
