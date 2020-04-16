@@ -47,35 +47,49 @@
     }
 
     .items {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-evenly;
+      display: grid;
+      grid-template-columns: auto;
       border-radius: 1rem;
       border: 1px solid gray;
     }
 
     .item {
+      display: flex;
+      justify-content: space-between;
       border-radius: 1rem;
       border: 1px solid grey;
       margin: 1rem;
       padding: 1rem;
-      flex-basis: 100%;
+    }
+
+    .left-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .multi-select {
+      margin-right: 10px;
+    }
+
+    .right-content {
+      align-self: center;
     }
 
     @media screen and (min-width: 600px) {
-      .item {
-        flex-basis: 45%;
+      .items {
+        grid-template-columns: auto auto;
       }
     }
 
     @media screen and (min-width: 750px) {
-      .item {
-        flex-basis: 30%;
+      .items {
+        grid-template-columns: auto auto auto;
       }
     }
 
     .complete {
-      background-color: red;
+      background-color: lightgreen;
     }
   </style>
 </head>
@@ -88,9 +102,13 @@
 
       return (
         <div className={`item ${complete ? 'complete' : ''}`}>
-          <h1>{title}</h1>
-
-          <button onClick={onToggle}>Toggle complete</button>
+          <div className={'left-content'}>
+            <input className={'multi-select'} type='checkbox'></input>
+            <h1>{title}</h1>
+          </div>
+          <div className={'right-content'}>
+            <button onClick={onToggle}>Toggle complete</button>
+          </div>
         </div>
       );
     }
