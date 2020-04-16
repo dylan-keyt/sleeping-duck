@@ -46,6 +46,14 @@
       align-items: flex-end;
     }
 
+    button:hover {
+      cursor: pointer;
+    }
+
+    input[type="checkbox"]:hover {
+      cursor: pointer;
+    }
+
     .items {
       display: grid;
       grid-template-columns: auto;
@@ -137,34 +145,12 @@
       }));
   };
 
-  const Item = ({
-    item: { title, complete, selected },
-    handleToggle,
-    handleSelected
-  }) => {
-    return (
-      <div className={`item ${complete ? COMPLETE : ''}`}>
-        <div className="left-content">
-          <input
-            className="multi-select-checkbox"
-            type="checkbox"
-            onChange={handleSelected}
-          />
-          <h2>{title}</h2>
-        </div>
-        <div className="right-content">
-          <button onClick={handleToggle}>Toggle complete</button>
-        </div>
-      </div>
-    );
-  };
-
   const App = () => {
     const [items, setItems] = React.useState(generateItems());
-    const [selectedItemCount, setSelectedItemCount] = React.useState(0);
+    const [selectedItems, setSelectedItems] = React.useState(0);
 
     React.useEffect(() => {
-      setSelectedItemCount(items.filter(({ selected }) => selected).length)
+      setSelectedItems(items.filter(({ selected }) => selected))
     }, [items]);
 
     const toggleItem = (index, prop) => {
@@ -206,9 +192,9 @@
             ))}
           </div>
         </div>
-        { selectedItemCount &&
+        { selectedItems.length &&
           <MultiSelectPopup
-            selectedItemCount={selectedItemCount}
+            selectedItems={selectedItems}
             setCompleteStatus={setCompleteStatus}
           />
         }
@@ -216,13 +202,36 @@
     );
   };
 
-  const MultiSelectPopup = ({ selectedItemCount, setCompleteStatus }) => {
+  const Item = ({
+    item: { title, complete, selected },
+    handleToggle,
+    handleSelected
+  }) => {
+    return (
+      <div className={`item ${complete ? COMPLETE : ''}`}>
+        <div className="left-content">
+          <input
+            className="multi-select-checkbox"
+            type="checkbox"
+            onChange={handleSelected}
+            checked={selected}
+          />
+          <h2>{title}</h2>
+        </div>
+        <div className="right-content">
+          <button onClick={handleToggle}>Toggle complete</button>
+        </div>
+      </div>
+    );
+  };
+
+  const MultiSelectPopup = ({ selectedItems, setCompleteStatus }) => {
     return (
       <React.Fragment>
         <div className="multi-select-padding" />
         <div className="multi-select-popup">
           <h2 className="multi-select-header">
-            {selectedItemCount} items selected
+            {selectedItems.length} items selected
           </h2>
           <div className="multi-select-buttons">
             <button onClick={() => setCompleteStatus(true)}>Mark as complete</button>
