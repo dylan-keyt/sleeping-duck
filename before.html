@@ -139,6 +139,7 @@
     return new Array(NUMBER_OF_ITEMS)
       .fill(null)
       .map((_item, i) => ({
+        id: `item-${i}`,
         title: `To-do: ${i}`,
         complete: false,
         selected: false
@@ -185,7 +186,7 @@
           <div className="items">
             {items.map((item, i) => (
               <Item
-                key={`item-${i}`}
+                key={item.id}
                 handleToggle={() => toggleItemStatus(i, COMPLETE)}
                 handleSelected={() => toggleItemStatus(i, SELECTED)}
                 item={item} />
