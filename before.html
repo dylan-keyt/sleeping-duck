@@ -46,7 +46,7 @@
       align-items: flex-end;
     }
 
-    button:hover {
+    button:enabled:hover {
       cursor: pointer;
     }
 
@@ -147,13 +147,13 @@
 
   const App = () => {
     const [items, setItems] = React.useState(generateItems());
-    const [selectedItems, setSelectedItems] = React.useState(0);
+    const [selectedItems, setSelectedItems] = React.useState([]);
 
     React.useEffect(() => {
       setSelectedItems(items.filter(({ selected }) => selected))
     }, [items]);
 
-    const toggleItem = (index, prop) => {
+    const toggleItemStatus = (index, prop) => {
       setItems(items
         .map((item, i) => (index === i
           ? { ...item, [prop]: !item[prop] }
@@ -186,8 +186,8 @@
             {items.map((item, i) => (
               <Item
                 key={`item-${i}`}
-                handleToggle={() => toggleItem(i, COMPLETE)}
-                handleSelected={() => toggleItem(i, SELECTED)}
+                handleToggle={() => toggleItemStatus(i, COMPLETE)}
+                handleSelected={() => toggleItemStatus(i, SELECTED)}
                 item={item} />
             ))}
           </div>
@@ -226,6 +226,8 @@
   };
 
   const MultiSelectPopup = ({ selectedItems, setCompleteStatus }) => {
+    const hasCompletedItems = selectedItems.filter(({ complete }) => complete).length
+    const hasIncompletedItems = selectedItems.filter(({ complete }) => !complete).length
     return (
       <React.Fragment>
         <div className="multi-select-padding" />
@@ -234,8 +236,16 @@
             {selectedItems.length} items selected
           </h2>
           <div className="multi-select-buttons">
-            <button onClick={() => setCompleteStatus(true)}>Mark as complete</button>
-            <button onClick={() => setCompleteStatus(false)}>Mark as incomplete</button>
+            <button
+              onClick={() => setCompleteStatus(true)}
+              disabled={hasCompletedItems && !hasIncompletedItems}>
+              Mark as complete
+            </button>
+            <button
+              onClick={() => setCompleteStatus(false)}
+              disabled={hasIncompletedItems && !hasCompletedItems}>
+              Mark as incomplete
+            </button>
           </div>
         </div>
       </React.Fragment>
