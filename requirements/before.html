@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>SD Dev test</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 12px;
+    }
+
+    * {
+      box-sizing: inherit;
+    }
+
+    .app {
+      margin: 0 auto;
+
+      max-width: 900px;
+    }
+
+    header {
+      border-bottom: 1px solid red;
+
+      display: flex;
+
+      margin-bottom: 2rem;
+
+      padding: 2rem 0;
+    }
+
+    header > .logo {
+      flex: 1;
+
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    header > .nav {
+      flex: 1;
+    }
+
+    .items {
+      border-radius: 1rem;
+
+      border: 1px solid gray;
+    }
+
+    .item {
+      border-radius: 1rem;
+
+      border: 1px solid grey;
+
+      margin: 1rem;
+
+      padding: 1rem;
+    }
+
+    .complete {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  class Item extends React.PureComponent {
+    render() {
+      const { item: { title, complete }, onToggle } = this.props;
+
+      return (
+        <div className={`item ${complete ? 'complete' : ''}`}>
+          <h1>{title}</h1>
+
+          <button onClick={onToggle}>Toggle complete</button>
+        </div>
+      );
+    }
+  }
+
+  class App extends React.PureComponent {
+    state = {
+      items: (new Array(35)).fill(null).map((_, i) => ({ title: `To-do: ${i}`, complete: false })),
+    };
+
+    toggleItem = (index) => {
+      this.setState(({ items }) => ({
+        items: items.map((item, i) => (index === i ? { ...item, complete: !item.complete } : item)),
+      }));
+    };
+
+    render() {
+      const { items } = this.state;
+
+      return (
+        <div className="app">
+          <header>
+            <div className="logo">Sleeping Duck</div>
+            <div className="nav">
+              <button>I don't do anything</button>
+              <button>I also don't do anything</button>
+            </div>
+          </header>
+
+          <div className="items">
+            {items.map((item, i) => (
+              <Item
+                key={i}
+                onToggle={() => this.toggleItem(i)}
+                item={item} />
+            ))}
+          </div>
+        </div>
+      );
+    }
+  }
+
+  ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
