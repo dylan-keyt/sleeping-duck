@@ -5,9 +5,9 @@ This is a code challenge I completed for Sleeping Duck as part of the applicatio
 
 All changes can be found in the file [`after.html`](./after.html).
 
-Please see [`dev-log.md`](./dev-log.md) and [my Trello board](https://trello.com/b/43vDwoy8/sleeping-duck-code-test) for details on how I worked through this code challenge and broke down the tasks.
+Please see [`dev-log.md`](./dev-log.md), [`time-breakdown.png`](./time-breakdown.png) and [my Trello board](https://trello.com/b/43vDwoy8/sleeping-duck-code-test) for details on how I worked through this code challenge and broke down the tasks.
 
-## Questions
+## Answers
 
 ### Part 1
 1. Passing a function allows access to the current state. In this case, we're accessing current items, then looping through them, only changing the value of complete once the condition is met.
