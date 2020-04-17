@@ -132,8 +132,8 @@
 
 <script type="text/babel">
   const NUMBER_OF_ITEMS = 35
-  const COMPLETE = 'complete'
-  const SELECTED = 'selected'
+  const COMPLETE = "complete"
+  const SELECTED = "selected"
 
   const generateItems = () => {
     return new Array(NUMBER_OF_ITEMS)
@@ -142,7 +142,7 @@
         id: `item-${i}`,
         title: `To-do: ${i}`,
         complete: false,
-        selected: false
+        selected: false,
       }));
   };
 
@@ -151,24 +151,22 @@
     const [selectedItems, setSelectedItems] = React.useState([]);
 
     React.useEffect(() => {
-      setSelectedItems(items.filter(({ selected }) => selected))
+      setSelectedItems(items.filter(({ selected }) => selected));
     }, [items]);
 
     const toggleItemStatus = (index, prop) => {
-      setItems(items
-        .map((item, i) => (index === i
-          ? { ...item, [prop]: !item[prop] }
-          : item
-        ))
+      setItems(
+        items.map((item, i) =>
+          index === i ? { ...item, [prop]: !item[prop] } : item
+        )
       );
     };
 
-    const setCompleteStatus = complete => {
-      setItems(items
-        .map(item => (item.selected
-          ? { ...item, complete, selected: false }
-          : item
-        ))
+    const setCompleteStatus = (complete) => {
+      setItems(
+        items.map((item) =>
+          item.selected ? { ...item, complete, selected: false } : item
+        )
       );
     };
 
@@ -189,16 +187,17 @@
                 key={item.id}
                 handleToggle={() => toggleItemStatus(i, COMPLETE)}
                 handleSelected={() => toggleItemStatus(i, SELECTED)}
-                item={item} />
+                item={item}
+              />
             ))}
           </div>
         </div>
-        { selectedItems.length &&
+        {selectedItems.length && (
           <MultiSelectPopup
             selectedItems={selectedItems}
             setCompleteStatus={setCompleteStatus}
           />
-        }
+        )}
       </React.Fragment>
     );
   };
@@ -206,10 +205,10 @@
   const Item = ({
     item: { title, complete, selected },
     handleToggle,
-    handleSelected
+    handleSelected,
   }) => {
     return (
-      <div className={`item ${complete ? COMPLETE : ''}`}>
+      <div className={`item ${complete ? COMPLETE : ""}`}>
         <div className="left-content">
           <input
             className="multi-select-checkbox"
@@ -227,26 +226,30 @@
   };
 
   const MultiSelectPopup = ({ selectedItems, setCompleteStatus }) => {
-    const hasCompletedItems = selectedItems.filter(({ complete }) => complete).length
-    const hasIncompletedItems = selectedItems.filter(({ complete }) => !complete).length
+    const hasCompletedItems = selectedItems.filter(({ complete }) => complete)
+      .length;
+    const hasIncompletedItems = selectedItems.filter(({ complete }) => !complete)
+      .length;
     return (
       <React.Fragment>
         <div className="multi-select-padding" />
         <div className="multi-select-popup">
           <h2 className="multi-select-header">
             {selectedItems.length} items selected
-          </h2>
+        </h2>
           <div className="multi-select-buttons">
             <button
               onClick={() => setCompleteStatus(true)}
-              disabled={hasCompletedItems && !hasIncompletedItems}>
+              disabled={hasCompletedItems && !hasIncompletedItems}
+            >
               Mark as complete
-            </button>
+          </button>
             <button
               onClick={() => setCompleteStatus(false)}
-              disabled={hasIncompletedItems && !hasCompletedItems}>
+              disabled={hasIncompletedItems && !hasCompletedItems}
+            >
               Mark as incomplete
-            </button>
+          </button>
           </div>
         </div>
       </React.Fragment>
